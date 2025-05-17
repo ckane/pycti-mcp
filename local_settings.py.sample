@@ -1,0 +1,3 @@
+api_url = ""       # Put the URL for your OpenCTI server here
+api_token = ""     # Put the API token to log into OpenCTI here
+listen_port = 8002 # The TCP port for it to listen on
