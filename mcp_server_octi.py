@@ -6,9 +6,9 @@ import logging
 from mcp.server.fastmcp import FastMCP
 from typing import Annotated
 from pycti import OpenCTIApiClient
-from local_settings import api_url, api_token
+from local_settings import api_url, api_token, listen_port
 
-mcp = FastMCP("OpenCTI.MCP", port=8002)
+mcp = FastMCP("OpenCTI.MCP", port=listen_port)
 
 def parse_obs(o):
     parsed_o = {
