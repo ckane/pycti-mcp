@@ -17,6 +17,7 @@ To use:
 ## OpenCTI Observable Lookup
 
 **Name**: `opencti_observable_lookup`
+
 **Inputs**: `observable` (`str`): An Observable
 
 Given an observable, queries for it in OpenCTI and, if it exists, returns JSON object representing
