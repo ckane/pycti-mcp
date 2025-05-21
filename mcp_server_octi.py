@@ -22,6 +22,8 @@ def parse_obs(o):
         'labels': [l['value'] for l in o['objectLabel']],
         'external_reports': [
             {'name': r['name'], 'urls': [e['url'] for e in r['externalReferences']]} for r in o['reports']
+        ] + [
+            {'name': 'Self', 'urls': [e['url'] for e in o['externalReferences']]}
         ],
         'notes': [note['content'] for note in o['notes']],
         'opinions': [{'sentiment': op['opinion'], 'explanation': op['explanation']} for op in o['opinions']]
@@ -36,6 +38,13 @@ obs_projection="""
     x_opencti_description
     created_at
     updated_at
+    externalReferences {
+      edges {
+        node {
+          url
+        }
+      }
+    }
     objectLabel {
       id
       value
