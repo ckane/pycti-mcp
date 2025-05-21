@@ -130,9 +130,15 @@ def opencti_observable_lookup(
             "filterGroups": [],
         }, customAttributes=obs_projection)
         log.info(f"Got {o}")
-        log.info("Made {o}".format(o=parse_obs(o)))
 
-        return parse_obs(o)
+        if o == None:
+            log.info("Result from OpenCTI was None")
+            return None
+
+        parsed_o = parse_obs(o)
+        log.info(f"Made {parsed_o}")
+
+        return parsed_o
     except Exception as e:
         log.error("Failed: {e}\n".format(e=e))
         raise e
