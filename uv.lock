@@ -353,7 +353,7 @@ wheels = [
 
 [[package]]
 name = "pycti"
-version = "6.6.11"
+version = "6.6.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cachetools" },
@@ -375,9 +375,9 @@ dependencies = [
     { name = "stix2" },
     { name = "uvicorn", extra = ["standard"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a3/c5/be7d129944352a604073079f5c93a018966c02b11e2b27806a8be368ac03/pycti-6.6.11.tar.gz", hash = "sha256:977ed30501096b84fdca820f7c77ab5a59d86f19b023846a1346f1b4c9248633", size = 168565, upload_time = "2025-05-12T16:40:52.066Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4e/8e/c88ce80e93df2004d410412fcd76f90590346360eb20657f2df5ba5a1619/pycti-6.6.12.tar.gz", hash = "sha256:d62f7bfbd62a74e8d3f62b7b6693da500bd53e86c2ff7e1a2e19ef926f734657", size = 168631, upload_time = "2025-05-20T15:20:37.722Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/85/6a/aa3129d63a06b85a120f895790f7e4aa9749a926eb1a23d6a66cc6d1ceca/pycti-6.6.11-py3-none-any.whl", hash = "sha256:eed62a79432e1a0d20664b46199829f3aca5f71365022a0e517ffc376da2ca03", size = 255396, upload_time = "2025-05-12T16:40:47.159Z" },
+    { url = "https://files.pythonhosted.org/packages/7b/15/29df089f56b948bb6f544fe5c8f0058d68a699e41606102b35eb0e7269be/pycti-6.6.12-py3-none-any.whl", hash = "sha256:ebc8d56faae9fd068edabe7b5ac8aa6f9d06f69bf439023b6124c2741caad218", size = 255453, upload_time = "2025-05-20T15:20:36.02Z" },
 ]
 
 [[package]]
