@@ -9,8 +9,8 @@ the LLM to consume in order to acheive the following improvements:
 
 To use:
 
-1. Copy `local_settings.py.sample` to `local_settings.py`, and edit the new file to your needs
-2. Run `uv run mcp run -t sse mcp_server_octi.py`
+1. Copy `pycti_tools/local_settings.py.sample` to `pycti_tools/local_settings.py`, and edit the new file to your needs
+2. Run `uv run mcp_server_octi.py`
 
 # Implemented Functions
 
