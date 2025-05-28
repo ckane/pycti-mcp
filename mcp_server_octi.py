@@ -7,7 +7,7 @@ from mcp.server.fastmcp import FastMCP
 
 def main():
     ap = ArgumentParser(description="Execute the OpenCTI MCP Server")
-    ap.add_argument('-p', '--port', required=False, type=int, default=8002, help='TCP port to listen on')
+    ap.add_argument('-p', '--port', required=False, type=int, default=8002, help='TCP port to listen on (default 8002)')
     args = ap.parse_args()
     mcp = FastMCP("OpenCTI.MCP", port=args.port)
 
