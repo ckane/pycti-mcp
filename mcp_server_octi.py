@@ -2,11 +2,14 @@ import asyncio
 import pycti_tools
 import importlib
 
+from argparse import ArgumentParser
 from mcp.server.fastmcp import FastMCP
-from pycti_tools.local_settings import listen_port
 
 def main():
-    mcp = FastMCP("OpenCTI.MCP", port=listen_port)
+    ap = ArgumentParser(description="Execute the OpenCTI MCP Server")
+    ap.add_argument('-p', '--port', required=False, type=int, default=8002, help='TCP port to listen on')
+    args = ap.parse_args()
+    mcp = FastMCP("OpenCTI.MCP", port=args.port)
 
     # Dynamically walk through ./pycti_tools/ and import each tool into MCP via its ToolSpec
     for m in pycti_tools.__all__:
