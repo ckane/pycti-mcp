@@ -19,13 +19,13 @@ def parse_adv(ta):
         'labels': [l['value'] for l in ta['objectLabel']],
         'first_seen': ta['first_seen'],
         'last_seen': ta['last_seen'],
-        #'external_reports': [
-        #    {'name': r['name'], 'urls': [e['url'] for e in r['externalReferences']]} for r in ta['reports']
-        #] + [
-        #    {'name': 'Self', 'urls': [e['url'] for e in ta['externalReferences']]}
-        #],
-       # 'notes': [note['content'] for note in ta['notes']],
-       # 'opinions': [{'sentiment': op['opinion'], 'explanation': op['explanation']} for op in ta['opinions']]
+        'external_reports': [
+            {'name': r['name'], 'urls': [e['url'] for e in r['externalReferences']]} for r in ta['reports']
+        ] + [
+            {'name': 'Self', 'urls': [e['url'] for e in ta['externalReferences']]}
+        ],
+        'notes': [note['content'] for note in ta['notes']],
+        'opinions': [{'sentiment': op['opinion'], 'explanation': op['explanation']} for op in ta['opinions']],
     }
 
     # Safely populate optional keys if they exist in the source object
@@ -36,6 +36,44 @@ def parse_adv(ta):
             parsed_ta[optkey] = ta[optkey]
 
     return parsed_ta
+
+notes_projection="""
+    id
+    content
+    authors
+"""
+
+opinions_projection="""
+    id
+    opinion
+    explanation
+    authors
+"""
+
+reports_projection="""
+    id
+    standard_id
+    name
+    published
+    entity_type
+    created_at
+    updated_at
+    created
+    modified
+    description
+    report_types
+    objectLabel {
+      id
+      value
+    }
+    externalReferences {
+      edges {
+        node {
+          url
+        }
+      }
+    }
+"""
 
 ta_projection="""
     id
@@ -56,21 +94,6 @@ ta_projection="""
     objectLabel {
       id
       value
-    }
-    reports {
-      edges {
-        node {
-          id
-          name
-          externalReferences {
-            edges {
-              node {
-                url
-              }
-            }
-          }
-        }
-      }
     }
     cases {
       edges {
@@ -102,23 +125,6 @@ ta_projection="""
         }
       }
     }
-    notes {
-      edges {
-        node {
-          id
-          content
-        }
-      }
-    }
-    opinions {
-      edges {
-        node {
-          id
-          explanation
-          opinion
-        }
-      }
-    }
 """
 
 # Should look up campaign, intrusion_set, threat_actor_group, and threat_actor_individual
@@ -147,6 +153,56 @@ def opencti_adversary_lookup(
             if ta == None:
                 log.info(f"Result from OpenCTI for {adv_type}={name} was None")
                 continue
+
+            # Look up the reports associated with the Adversary
+            ta_rpts = octi.report.list(
+                filters={
+                    "mode": "and",
+                    "filters": [{"key": "objects", "values": [ta["id"]]}],
+                    "filterGroups": [],
+                },
+                orderBy="published",
+                orderMode="asc",
+                customAttributes=reports_projection,
+            )
+
+            # Add reports to the Threat Adversary data structure, if any relate
+            if not ta_rpts:
+                ta["reports"] = []
+            else:
+                ta["reports"] = ta_rpts
+
+            # Look up the notes associated with the Adversary
+            ta_notes = octi.note.list(
+                filters={
+                    "mode": "and",
+                    "filters": [{"key": "objects", "values": [ta["id"]]}],
+                    "filterGroups": [],
+                },
+                customAttributes=notes_projection,
+            )
+
+            # Add reports to the Threat Adversary data structure, if any relate
+            if not ta_notes:
+                ta["notes"] = []
+            else:
+                ta["notes"] = ta_notes
+
+            # Look up the opinions associated with the Adversary
+            ta_opinions = octi.opinion.list(
+                filters={
+                    "mode": "and",
+                    "filters": [{"key": "objects", "values": [ta["id"]]}],
+                    "filterGroups": [],
+                },
+                customAttributes=opinions_projection,
+            )
+
+            # Add reports to the Threat Adversary data structure, if any relate
+            if not ta_opinions:
+                ta["opinions"] = []
+            else:
+                ta["opinions"] = ta_opinions
 
             parsed_ta = parse_adv(ta)
             log.info(f"Made {parsed_ta}")
