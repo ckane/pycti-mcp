@@ -148,7 +148,7 @@ def opencti_adversary_lookup(
                 "filters": [{"key": "name", "values": [name]}, {"key": "aliases", "values": [name]}],
                 "filterGroups": [],
             }, customAttributes=ta_projection)
-            log.info(f"Got {ta}")
+            log.debug(f"Got {json.dumps(ta)}")
 
             if ta == None:
                 log.info(f"Result from OpenCTI for {adv_type}={name} was None")
@@ -205,7 +205,7 @@ def opencti_adversary_lookup(
                 ta["opinions"] = ta_opinions
 
             parsed_ta = parse_adv(ta)
-            log.info(f"Made {parsed_ta}")
+            log.debug(f"Made {json.dumps(parsed_ta)}")
 
             ta_list.append(parsed_ta)
         except Exception as e:

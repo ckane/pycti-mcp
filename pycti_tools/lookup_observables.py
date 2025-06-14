@@ -124,14 +124,14 @@ def opencti_observable_lookup(
             "filters": [{"key": "value", "values": [observable]}],
             "filterGroups": [],
         }, customAttributes=obs_projection)
-        log.info(f"Got {o}")
+        log.debug(f"Got {json.dumps(o)}")
 
         if o == None:
             log.info("Result from OpenCTI was None")
             return None
 
         parsed_o = parse_obs(o)
-        log.info(f"Made {parsed_o}")
+        log.debug(f"Made {json.dumps(parsed_o)}")
 
         return parsed_o
     except Exception as e:

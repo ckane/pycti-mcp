@@ -234,19 +234,19 @@ def opencti_reports_lookup(
 
           fargs['filters'] = daterange_filter
 
-        log.info(f'Query: {fargs}')
+        log.debug(f'Query: {fargs}')
         r = octi.report.list(**fargs)
     except e:
         log.error(f'There was an error {e}')
 
     rpts_list = []
 
-    log.info(f'{len(r)} Reports found')
+    log.debug(f'{len(r)} Reports found')
 
     for rpt in r:
       parsed_rpt = parse_rpt(rpt)
       rpts_list.append(parsed_rpt)
-      log.info(f'Report result: {parsed_rpt}')
+      log.debug(f'Report result: {json.dumps(parsed_rpt)}')
 
     return rpts_list
 
