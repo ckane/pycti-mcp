@@ -12,7 +12,43 @@ To use:
 1. Copy `pycti_tools/local_settings.py.sample` to `pycti_tools/local_settings.py`, and edit the new file to your needs
 2. Run `uv run mcp_server_octi.py`
 
-# Implemented Functions
+Usage details:
+
+```plaintext
+usage: mcp_server_octi.py [-h] [-p PORT] [-s]
+
+Execute the OpenCTI MCP Server
+
+options:
+  -h, --help       show this help message and exit
+  -p, --port PORT  TCP port to listen on (default 8002 - ignored if -s)
+  -s, --stdio      Start an STDIO server (default: off)
+```
+
+# Adding New Tools
+
+New tools may be added by creating a new Python module under [`pycti_tools/`](./pycti_tools/), then adding it to the
+the `__all__` list in [`pycti_tools/__init__.py`](./pycti_tools/__init__.py). The only requirement is that your code
+must implement exactly **one tool per module**, and the module must contain a `class ToolSpec` that describes the
+tool using the following three class variables:
+* `name`: The name of the tool as it will be exposed by the MCP server
+* `description`: A description of the tool to provide via the MCP server as will
+* `fn`: The function that will act as the *entrypoint* for the tool
+
+Example from `lookup_reports.py` below:
+
+```python
+class ToolSpec:
+    name = "opencti_reports_lookup"
+    description = """Search in OpenCTI for any reports matching the search term `search`, and having creation timestamps between
+                     `earliest` and `latest`. Any of these input variables can be omitted by setting them to None, if the aren't
+                     desired for filtering reports. The result will be a list of structured objects representing all the reports
+                     matching the provided criteria.
+                  """
+    fn = opencti_reports_lookup
+```
+
+# Implemented Tools
 
 ## OpenCTI Observable Lookup
 
