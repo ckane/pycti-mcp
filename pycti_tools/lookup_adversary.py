@@ -130,7 +130,10 @@ ta_projection="""
 # Should look up campaign, intrusion_set, threat_actor_group, and threat_actor_individual
 def opencti_adversary_lookup(
     name: Annotated[str, "The adversary or threat name or alias to look up in OpenCTI"],
-) -> Annotated[dict, "Data structure representing the adversary"] | None:
+) -> (
+    Annotated[list[dict], "List of Data structures representing matching adversaries"]
+    | None
+):
     """Given a name or alias of a threat adversary, look it up in OpenCTI. If it is stored in OpenCTI return a JSON
        data structure with information about it. Can be used to look up Threat Actors, Threat Actor Groups, Campaigns, Individuals,
        and Intrusion Sets. If it isn't found, None will be returned."""
