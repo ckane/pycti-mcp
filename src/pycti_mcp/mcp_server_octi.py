@@ -5,7 +5,7 @@ import logging
 import os
 
 from argparse import ArgumentParser
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 
 
 def main():
@@ -57,7 +57,7 @@ def main():
 
     log = logging.getLogger(__name__)
 
-    mcp = FastMCP("OpenCTI.MCP", port=args.port)
+    mcp = FastMCP("OpenCTI.MCP")
 
     # Dynamically walk through ./pycti_tools/ and import each tool into MCP via its ToolSpec
     for m in pycti_mcp.pycti_tools.__all__:
@@ -65,16 +65,14 @@ def main():
         try:
             tmpmod.ToolSpec.opencti_url = args.url
             tmpmod.ToolSpec.opencti_key = args.key
-            mcp.add_tool(
-                tmpmod.ToolSpec.fn, tmpmod.ToolSpec.name, tmpmod.ToolSpec.description
-            )
+            mcp.tool(tmpmod.ToolSpec.fn)
             log.info(f"Added {tmpmod.ToolSpec} to MCP")
         except Exception as e:
             log.critical(f"Failed to load ToolSpec from pycti_tools.{m}")
             raise e
 
     if args.sse:
-        asyncio.run(mcp.run_sse_async())
+        asyncio.run(mcp.run_http_async(port=args.port))
     else:
         asyncio.run(mcp.run_stdio_async())
 
