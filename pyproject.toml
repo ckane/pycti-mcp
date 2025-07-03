@@ -15,3 +15,8 @@ pycti-mcp = "pycti_mcp.cli:main"
 [build-system]
 build-backend = "uv_build"
 requires = ["uv_build>=0.7.19"]
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
