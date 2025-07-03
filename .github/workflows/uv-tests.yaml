@@ -1,4 +1,4 @@
-name: UV Build
+name: UV Build Tests
 
 on:
   push:
@@ -29,3 +29,12 @@ jobs:
       - name: Test that executing the package --help works
         run: |
           uvx --from dist/pycti_mcp-*.tar.gz pycti-mcp --help
+
+      - name: Test that executing the package yields a list of tools
+        run: |
+          (
+            echo '{"jsonrpc":"2.0","method":"initialize","id":1,"params":{"protocol_version": "2025-03-26", "capabilities": {"roots": {"listChanged": true}, "sampling"{}}, "clientInfo": {"name": "TestUVClient", "version": "1.0.0"}}}' \
+              && sleep 10 \
+              && echo '{"jsonrpc":"2.0","method":"tools/list","id":1}' \
+          ) | stdbuf -oL uvx --from dist/pycti_mcp-*.tar.gz pycti-mcp \
+            | jq
