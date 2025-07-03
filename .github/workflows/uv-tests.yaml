@@ -32,4 +32,6 @@ jobs:
         uses: actions/setup-node@v4
 
       - name: Test pycti-mcp yields a list of tools when queried with MCP inspector
-        run: npx @modelcontextprotocol/inspector --cli --method tools/list uvx --from dist/pycti_mcp-*.tar.gz pycti-mcp
+        run: |
+          npx -y @modelcontextprotocol/inspector --cli --method tools/list uvx --from dist/pycti_mcp-*.tar.gz pycti-mcp \
+            | jq -r '.tools[].name'
