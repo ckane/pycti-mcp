@@ -1,0 +1,31 @@
+name: UV Build
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  test-uv-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.13t"]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install latest uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Build the package with uv
+        run: |
+          uv build
+
+      - name: Test that executing the package --help works
+        run: |
+          uvx --from dist/pycti_mcp-*.tar.gz pycti-mcp --help
