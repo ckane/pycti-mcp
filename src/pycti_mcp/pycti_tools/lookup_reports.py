@@ -280,12 +280,6 @@ def opencti_reports_lookup(
 
 
 class ToolSpec:
-    name = "opencti_reports_lookup"
-    description = """Search in OpenCTI for any reports matching the search term `search`, and having creation timestamps between
-                     `earliest` and `latest`. Any of these input variables can be omitted by setting them to None, if the aren't
-                     desired for filtering reports. The result will be a list of structured objects representing all the reports
-                     matching the provided criteria.
-                  """
     fn = opencti_reports_lookup
     opencti_url = ""
     opencti_key = ""

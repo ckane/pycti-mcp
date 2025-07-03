@@ -249,10 +249,6 @@ def opencti_adversary_lookup(
 
 
 class ToolSpec:
-    name = "opencti_adversary_lookup"
-    description = """Given a name or alias of a threat adversary, look it up in OpenCTI. If it is stored in OpenCTI return a JSON
-       data structure with information about it. Can be used to look up Threat Actors, Threat Actor Groups, Campaigns, Individuals,
-       and Intrusion Sets. If it isn't found, None will be returned."""
     fn = opencti_adversary_lookup
     opencti_url = ""
     opencti_key = ""

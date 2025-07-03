@@ -155,10 +155,6 @@ def opencti_observable_lookup(
 
 
 class ToolSpec:
-    name = "opencti_observable_lookup"
-    description = """Given one obervable, look it up in OpenCTI. If it is stored in OpenCTI return a JSON
-       data structure with information about it. Otherwise, if it doesn't exist, None will
-       be returned."""
     fn = opencti_observable_lookup
     opencti_url = ""
     opencti_key = ""
