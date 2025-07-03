@@ -1,6 +1,6 @@
 [project]
 name = "pycti-mcp"
-version = "0.1.1"
+version = "0.1.2"
 description = "Model Context Protocol (MCP) Server for OpenCTI"
 readme = "README.md"
 requires-python = ">=3.12"
