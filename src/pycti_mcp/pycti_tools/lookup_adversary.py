@@ -4,7 +4,6 @@ import json
 import logging
 from typing import Annotated
 from pycti import OpenCTIApiClient
-from .local_settings import api_url, api_token
 
 
 # Parse a "Threat Adversary" when fetched from the system
@@ -150,8 +149,15 @@ def opencti_adversary_lookup(
     """Given a name or alias of a threat adversary, look it up in OpenCTI. If it is stored in OpenCTI return a JSON
     data structure with information about it. Can be used to look up Threat Actors, Threat Actor Groups, Campaigns, Individuals,
     and Intrusion Sets. If it isn't found, None will be returned."""
-    log = logging.getLogger(name="octimcp")
-    octi = OpenCTIApiClient(url=api_url, token=api_token, ssl_verify=True)
+    log = logging.getLogger(name=__name__)
+
+    if not ToolSpec.opencti_url:
+        log.error("OpenCTI URL was not set. Tool will not work")
+        return None
+
+    octi = OpenCTIApiClient(
+        url=ToolSpec.opencti_url, token=ToolSpec.opencti_key, ssl_verify=True
+    )
 
     adversary_types = [
         octi.campaign,
@@ -248,3 +254,5 @@ class ToolSpec:
        data structure with information about it. Can be used to look up Threat Actors, Threat Actor Groups, Campaigns, Individuals,
        and Intrusion Sets. If it isn't found, None will be returned."""
     fn = opencti_adversary_lookup
+    opencti_url = ""
+    opencti_key = ""

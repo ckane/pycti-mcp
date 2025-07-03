@@ -1,10 +1,17 @@
 [project]
 name = "pycti-mcp"
 version = "0.1.0"
-description = "Add your description here"
+description = "Model Context Protocol (MCP) Server for OpenCTI"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "mcp[cli]>=1.6.0",
-    "pycti>=6.5.11",
-]
+requires-python = ">=3.12"
+dependencies = ["mcp[cli]>=1.6.0", "pycti>=6.7.2"]
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Coleman Kane", email = "ckane@colemankane.org" }]
+
+[project.scripts]
+pycti-mcp = "pycti_mcp.cli:main"
+
+[build-system]
+build-backend = "uv_build"
+requires = ["uv_build>=0.7.19"]

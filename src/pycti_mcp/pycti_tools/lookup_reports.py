@@ -5,7 +5,6 @@ import logging
 from dateutil.parser import parse as dateparse
 from typing import Annotated
 from pycti import OpenCTIApiClient
-from .local_settings import api_url, api_token
 
 desired_obj_fields = ["value", "name", "pattern", "pattern_type", "observable_value"]
 
@@ -206,8 +205,15 @@ def opencti_reports_lookup(
 ) -> Annotated[list | None, "Data structure listing the discovered reports"]:
     """Given a date range (start and end date) and some search terms, find all reports in the system
     matching the given criteria"""
-    log = logging.getLogger(name="octimcp")
-    octi = OpenCTIApiClient(url=api_url, token=api_token, ssl_verify=True)
+    log = logging.getLogger(name=__name__)
+
+    if not ToolSpec.opencti_url:
+        log.error("OpenCTI URL was not set. Tool will not work")
+        return None
+
+    octi = OpenCTIApiClient(
+        url=ToolSpec.opencti_url, token=ToolSpec.opencti_key, ssl_verify=True
+    )
 
     log.info(
         f'Searching for reports between {earliest} and {latest} via search term "{search}"'
@@ -281,3 +287,5 @@ class ToolSpec:
                      matching the provided criteria.
                   """
     fn = opencti_reports_lookup
+    opencti_url = ""
+    opencti_key = ""

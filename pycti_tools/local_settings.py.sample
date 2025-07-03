@@ -1,2 +1,0 @@
-api_url = ""       # Put the URL for your OpenCTI server here
-api_token = ""     # Put the API token to log into OpenCTI here
