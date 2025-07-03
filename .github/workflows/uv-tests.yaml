@@ -31,7 +31,7 @@ jobs:
       - name: Install Node.js to use @mcp/inspector
         uses: actions/setup-node@v4
 
-      - name: Test pycti-mcp yields a list of tools when queried with MCP inspector
+      - name: Test pycti-mcp yields the right list of tools when queried with MCP inspector
         run: |
           npx -y @modelcontextprotocol/inspector --cli --method tools/list uvx --from dist/pycti_mcp-*.tar.gz pycti-mcp \
-            | jq -r '.tools[].name'
+            | jq -r '.tools[].name' | sort | diff -u ./tests/tools_list.txt -
