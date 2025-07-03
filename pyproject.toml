@@ -1,6 +1,6 @@
 [project]
 name = "pycti-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "Model Context Protocol (MCP) Server for OpenCTI"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -8,6 +8,11 @@ dependencies = ["mcp[cli]>=1.6.0", "pycti>=6.7.2"]
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Coleman Kane", email = "ckane@colemankane.org" }]
+
+[project.urls]
+'Homepage' = 'https://github.com/ckane/pycti-mcp'
+'Repository' = 'https://github.com/ckane/pycti-mcp'
+'Issue Tracker' = 'https://github.com/ckane/pycti-mcp/issues'
 
 [project.scripts]
 pycti-mcp = "pycti_mcp.cli:main"
