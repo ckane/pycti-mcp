@@ -23,18 +23,13 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Build the package with uv
-        run: |
-          uv build
+        run: uv build
 
       - name: Test that executing the package --help works
-        run: |
-          uvx --from dist/pycti_mcp-*.tar.gz pycti-mcp --help
+        run: uvx --from dist/pycti_mcp-*.tar.gz pycti-mcp --help
 
-      - name: Test that executing the package yields a list of tools
-        run: |
-          (
-            echo '{"jsonrpc":"2.0","method":"initialize","id":1,"params":{"protocol_version": "2025-03-26", "capabilities": {"roots": {"listChanged": true}, "sampling"{}}, "clientInfo": {"name": "TestUVClient", "version": "1.0.0"}}}' \
-              && sleep 10 \
-              && echo '{"jsonrpc":"2.0","method":"tools/list","id":1}' \
-          ) | stdbuf -oL uvx --from dist/pycti_mcp-*.tar.gz pycti-mcp \
-            | jq
+      - name: Install Node.js to use @mcp/inspector
+        uses: actions/setup-node@v4
+
+      - name: Test pycti-mcp yields a list of tools when queried with MCP inspector
+        run: npx @modelcontextprotocol/inspector --cli --method tools/list uvx --from dist/pycti_mcp-*.tar.gz pycti-mcp
