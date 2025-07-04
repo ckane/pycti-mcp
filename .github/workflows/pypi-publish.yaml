@@ -14,7 +14,39 @@ jobs:
         uses: lewagon/wait-on-check-action@v1.4.0
         with:
           ref: ${{ github.ref }}
-          check-name: "Run tests"
+          check-name: "Run tests (3.13t)"
+          wait-interval: 30
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for Tests to succeed
+        uses: lewagon/wait-on-check-action@v1.4.0
+        with:
+          ref: ${{ github.ref }}
+          check-name: "Run tests (3.13)"
+          wait-interval: 30
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for Tests to succeed
+        uses: lewagon/wait-on-check-action@v1.4.0
+        with:
+          ref: ${{ github.ref }}
+          check-name: "Run tests (3.12)"
+          wait-interval: 30
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for Tests to succeed
+        uses: lewagon/wait-on-check-action@v1.4.0
+        with:
+          ref: ${{ github.ref }}
+          check-name: "Run tests (3.11)"
+          wait-interval: 30
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for Tests to succeed
+        uses: lewagon/wait-on-check-action@v1.4.0
+        with:
+          ref: ${{ github.ref }}
+          check-name: "Run tests (3.10)"
           wait-interval: 30
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
