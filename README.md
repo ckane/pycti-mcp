@@ -11,7 +11,7 @@ the LLM to consume in order to acheive the following improvements:
 To use:
 
 1. Set `$OPENCTI_URL` and `$OPENCTI_KEY` to your OpenCTI URL and API Key, respectively. Or, you can provide these on the command-line.
-2. Run `uvx pycti-mcp@latest`
+2. Run `uvx pycti-mcp@latest [ ... any CLI args ... ]`
 
 Usage details:
 
@@ -31,34 +31,67 @@ options:
 
 # Adding New Tools
 
-New tools may be added by creating a new Python module under [`src/pycti_mcp/pycti_tools/`](./src/pycti_mcp/pycti_tools/), then adding it to the
-the `__all__` list in [`pycti_tools/__init__.py`](./pycti_tools/__init__.py). The only requirement is that your code
-must implement exactly **one tool per module**, and the module must contain a `class ToolSpec` that describes the
-tool using the following three class variables:
+New tools may be added by creating a new Python module under [`src/pycti_mcp/pycti_tools/`](./src/pycti_mcp/pycti_tools/), then adding it
+to the `__all__` list in [`pycti_tools/__init__.py`](./pycti_tools/__init__.py). The only requirement is that your code
+must implement exactly **one tool per module**, and the module must contain a `def tool_init(url, key)` function that takes the
+OpenCTI url and API key as input (to save them internally for run-time use) and returns the function which is the entrypoint for the tool.
+The entrypoint must implement the [Python Type Annotations](https://typing.python.org/en/latest/spec/annotations.html), which will be used
+to provide an English-language description of how to call your tool, what it returns, and what its purpose is.
 
-- `name`: The name of the tool as it will be exposed by the MCP server
-- `description`: A description of the tool to provide via the MCP server as will
-- `fn`: The function that will act as the _entrypoint_ for the tool
-- `opencti_url` / `opencti_key`: Set to `""`, will be overwritten at run-time with the provided values
-
-Example from `lookup_reports.py` below:
+Example `generic_tool.py` below:
 
 ```python
-class ToolSpec:
-    name = "opencti_reports_lookup"
-    description = """Search in OpenCTI for any reports matching the search term `search`, and having creation timestamps between
-                     `earliest` and `latest`. Any of these input variables can be omitted by setting them to None, if the aren't
-                     desired for filtering reports. The result will be a list of structured objects representing all the reports
-                     matching the provided criteria.
-                  """
-    fn = opencti_reports_lookup
+from typing import Annotated
+from pycti import OpenCTIApiClient
+
+# Useful convention is to make a class implementation which holds the credentials provided to the tool
+# from the call to tool_init(url, key)
+class OpenCTIConfig:
     opencti_url = ""
     opencti_key = ""
+
+def opencti_generic_tool(
+    earliest: Annotated[str | None, "The earliest date of my search range"] = None,
+    latest: Annotated[str | None, "The latest date of my search range"] = None,
+    search: Annotated[str | None, "Search terms to filter on"] = None,
+) -> Annotated[list | None, "Data structure listing the matching objects in the range"]:
+    """Given a date range (start and end date) and some search terms, find all generic objects in the system
+    matching the given criteria"""
+    log = logging.getLogger(name=__name__)
+
+    if not OpenCTIConfig.opencti_url:
+        log.error("OpenCTI URL was not set. Tool will not work")
+        return None
+
+    # The credentials can be referenced by OpenCTIConfig.* as below
+    octi = OpenCTIApiClient(
+        url=OpenCTIConfig.opencti_url, token=OpenCTIConfig.opencti_key, ssl_verify=True
+    )
+
+    found_objs = []
+
+    # TODO: Your implementation would go here, using the OpenCTI client to perform desired work
+    ...
+
+    ...
+
+# Implement the tool_init that will be called by the MCP server to discover the available tool
+def tool_init(url, key):
+    # Note that it overwrites the default values in OpenCTIConfig.* with what was provided
+    OpenCTIConfig.opencti_url = url
+    OpenCTIConfig.opencti_key = key
+    return opencti_reports_lookup
 ```
+
+New tools need to be added to the following files in the project:
+
+- [`./src/pycti_mcp/pycti_tools/__init__.py`](./src/pycti_mcp/pycti_tools/__init__.py) - Needs to be in the `__all__` list here to be auto-loaded
+- [`./tests/tools_list.txt`](./tests/tools_list.txt) - Needs to be added to the list of tools, in alphabetical order, for the test suite to succeed
 
 # Implemented Tools
 
-## OpenCTI Observable Lookup
+<details>
+<summary>OpenCTI Observable Lookup</summary>
 
 **Name**: `opencti_observable_lookup`
 
@@ -85,7 +118,10 @@ the findings from OpenCTI for the observable, with the following fields:
   - `sentiment`: The sentiment expressed in the opinion.
   - `explanation`: An explanation of the opinion.
 
-## OpenCTI Adversary Lookup
+</details>
+
+<details>
+<summary>OpenCTI Adversary Lookup</summary>
 
 **Name**: `opencti_adversary_lookup`
 
@@ -111,8 +147,10 @@ matching `name` either in its formal name or one of its aliases.
 - `opinions`: A list of opinions about the adversary, where each opinion includes:
   - `sentiment`: The sentiment expressed in the opinion.
   - `explanation`: An explanation of the opinion.
+  </details>
 
-## OpenCTI Report Lookup
+<details>
+<summary>OpenCTI Report Lookup</summary>
 
 **Name**: `opencti_report_lookup`
 
@@ -137,3 +175,5 @@ between the creation timestamps `earliest` and `latest`. Any of the inputs can b
 - `external_urls`: A list of external URLs referencing sourcing of the report.
 - `report_types`: The type label(s) of the analysis report.
 - `objects`: The STIX objects (Entities and Cyber observables) contained within the report.
+
+</details>
