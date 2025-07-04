@@ -1,3 +1,5 @@
+# `pycti-mcp`: An MCP Server for OpenCTI
+
 An [MCP](https://modelcontextprotocol.io/) server front-end for [`pycti`](https://github.com/OpenCTI-Platform/client-python).
 
 Inspired by [Spathodea-Network/opencti-mcp](https://github.com/Spathodea-Network/opencti-mcp), but rather than trying to reflect
@@ -28,6 +30,74 @@ options:
   -u, --url URL    OpenCTI URL - Can also be provided in OPENCTI_URL environment variable
   -k, --key KEY    OpenCTI API Key - Can also be provided in OPENCTI_KEY environment variable
 ```
+
+## Usage with [mcp-hub](https://github.com/ravitemer/mcp-hub)
+
+The packaging of this MCP server has been designed to work well with the [mcp-hub](https://github.com/ravitemer/mcp-hub) project. For more
+details about it, you can visit its project page. MCP-Hub is popular for providing multi-MCP-server management to various
+tools, such as NeoVim. To add this project to MCP-Hub, simply extend your `mcpServers` section in `~/.config/mcphub/servers.json`
+with the following configuration, adjusting as necessary for your particular server/environment:
+
+```json
+{
+  "mcpServers": {
+    "OpenCTI": {
+      "command": "uvx",
+      "args": [
+        "pycti-mcp@latest",
+        "--url",
+        "https://my.opencti.server",
+        "--key",
+        "${cmd: kwallet-query -r my-opencti-apikey -l kdewallet}"
+      ]
+    }
+  }
+}
+```
+
+Note that, in the above example, `mcp-hub` supports various types of variable/shell expansion in the JSON configuration file. In
+the above example, [KWalletManager](https://apps.kde.org/kwalletmanager5/) (or similar) would have been used to manually populate
+a password named `my-opencti-apikey` in the `kdewallet` wallet. The above code would trigger any required system-side authentication
+prompts for secret retrieval, and keep the secret out of the JSON file. If, however, storing the API Key in your JSON file is acceptable
+or preferable, you can simply make the API key the value of that field in the JSON.
+
+If preferred, the `--url` and `--key` arguments can be left off, and an `env` section can be added to the configuration to
+populate the `OPENCTI_URL` and `OPENCTI_KEY` environment vars, instead. Read the `mcp-hub` documentation for more details.
+
+## Usage with VSCode
+
+Similar to above, [VSCode Supports MCP Servers](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) as well. You
+can add `pycti-mcp` using a config similar to this:
+
+```json
+{
+  // Inputs are prompted on first server start, then stored securely by VS Code.
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "opencti-key",
+      "description": "OpenCTI API Key",
+      "password": true
+    }
+  ],
+  "servers": {
+    "OpenCTI": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "pycti-mcp@latest",
+        "-u",
+        "https://my.opencti.server",
+        "-k",
+        "${input:opencti-key"
+      ]
+    }
+  }
+}
+```
+
+If preferred, the `--url` and `--key` arguments can be left off, and an `env` section can be added to the configuration to
+populate the `OPENCTI_URL` and `OPENCTI_KEY` environment vars, instead. See the above VSCode documentation for more details.
 
 # Adding New Tools
 
