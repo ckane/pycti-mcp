@@ -1,0 +1,30 @@
+name: UV Publish to PyPI (Test)
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  publish-pypi:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install latest uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Build the package with uv
+        run: uv build
+
+      - name: Verify the package built in dist matches the pushed tag
+        run: |
+          pushed_tag=${GITHUB_REF_NAME}
+          package_version=$(uv version --short)
+          if [ "$pushed_tag" != "$package_version" ]; then
+            echo "Error: Pushed tag $pushed_tag does not match package version $package_version."
+            exit 1
+          fi
+          echo "Verification successful: Pushed tag $pushed_tag matches package version $package_version."
