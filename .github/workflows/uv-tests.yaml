@@ -10,6 +10,7 @@ on:
 
 jobs:
   test-uv-build:
+    name: Run tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
