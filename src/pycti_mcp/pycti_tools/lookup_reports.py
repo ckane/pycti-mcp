@@ -1,5 +1,3 @@
-import random
-import sys
 import json
 import logging
 from dateutil.parser import parse as dateparse
