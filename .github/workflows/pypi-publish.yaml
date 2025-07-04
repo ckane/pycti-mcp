@@ -8,6 +8,8 @@ on:
 jobs:
   publish-pypi:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
 
     steps:
       - name: Wait for Tests to succeed
@@ -70,4 +72,4 @@ jobs:
           echo "Verification successful: Pushed tag $pushed_tag matches package version $package_version."
 
       - name: Publish to PyPI (Test)
-        run: uv publish --index testpypi
+        run: uv publish --index testpypi --trusted-publishing always
