@@ -73,3 +73,6 @@ jobs:
 
       - name: Publish to PyPI (Test)
         run: uv publish --index testpypi --trusted-publishing always
+
+      - name: Publish to PyPI (Prod)
+        run: uv publish --trusted-publishing always
