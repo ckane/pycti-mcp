@@ -36,7 +36,7 @@ def parse_rpt(rpt: dict) -> dict:
     parsed_rpt = {
         "stix_id": rpt["standard_id"],
         "opencti_id": rpt["id"],
-        "labels": [l["value"] for l in rpt["objectLabel"]],
+        "labels": [label["value"] for label in rpt["objectLabel"]],
         "data_type": rpt["entity_type"],
         "description": rpt["description"],
         "name": rpt["name"],

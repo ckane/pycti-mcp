@@ -13,7 +13,7 @@ def parse_obs(o):
         "description": o["x_opencti_description"],
         "created": o["created_at"],
         "last_updated": o["updated_at"],
-        "labels": [l["value"] for l in o["objectLabel"]],
+        "labels": [label["value"] for label in o["objectLabel"]],
         "external_reports": [
             {"name": r["name"], "urls": [e["url"] for e in r["externalReferences"]]}
             for r in o["reports"]
@@ -139,7 +139,7 @@ def opencti_observable_lookup(
         )
         log.debug(f"Got {json.dumps(o)}")
 
-        if o == None:
+        if o is None:
             log.info("Result from OpenCTI was None")
             return None
 

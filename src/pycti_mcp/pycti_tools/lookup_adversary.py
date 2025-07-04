@@ -14,7 +14,7 @@ def parse_adv(ta):
         "description": ta["description"],
         "created": ta["created_at"],
         "last_updated": ta["updated_at"],
-        "labels": [l["value"] for l in ta["objectLabel"]],
+        "labels": [label["value"] for label in ta["objectLabel"]],
         "first_seen": ta["first_seen"],
         "last_seen": ta["last_seen"],
         "external_reports": [
@@ -181,7 +181,7 @@ def opencti_adversary_lookup(
             )
             log.debug(f"Got {json.dumps(ta)}")
 
-            if ta == None:
+            if ta is None:
                 log.info(f"Result from OpenCTI for {adv_type}={name} was None")
                 continue
 
