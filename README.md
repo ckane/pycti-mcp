@@ -32,7 +32,11 @@ options:
 # Adding New Tools
 
 New tools may be added by creating a new Python module under [`src/pycti_mcp/pycti_tools/`](./src/pycti_mcp/pycti_tools/), then adding it
-to the `__all__` list in [`pycti_tools/__init__.py`](./pycti_tools/__init__.py). The only requirement is that your code
+to the `__all__` list in [`./src/pycti_mcp/pycti_tools/__init__.py`](./src/pycti_mcp/pycti_tools/__init__.py) and to the
+appropriate place in [`./tests/tools_list.txt`](./tests/tools_list.txt) so that the test suite can discover it during
+code validation.
+
+The only requirement is that your code
 must implement exactly **one tool per module**, and the module must contain a `def tool_init(url, key)` function that takes the
 OpenCTI url and API key as input (to save them internally for run-time use) and returns the function which is the entrypoint for the tool.
 The entrypoint must implement the [Python Type Annotations](https://typing.python.org/en/latest/spec/annotations.html), which will be used
