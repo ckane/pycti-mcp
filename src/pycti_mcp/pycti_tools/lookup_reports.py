@@ -4,6 +4,12 @@ from dateutil.parser import parse as dateparse
 from typing import Annotated
 from pycti import OpenCTIApiClient
 
+
+class OpenCTIConfig:
+    opencti_url = ""
+    opencti_key = ""
+
+
 desired_obj_fields = ["value", "name", "pattern", "pattern_type", "observable_value"]
 
 
@@ -205,12 +211,12 @@ def opencti_reports_lookup(
     matching the given criteria"""
     log = logging.getLogger(name=__name__)
 
-    if not ToolSpec.opencti_url:
+    if not OpenCTIConfig.opencti_url:
         log.error("OpenCTI URL was not set. Tool will not work")
         return None
 
     octi = OpenCTIApiClient(
-        url=ToolSpec.opencti_url, token=ToolSpec.opencti_key, ssl_verify=True
+        url=OpenCTIConfig.opencti_url, token=OpenCTIConfig.opencti_key, ssl_verify=True
     )
 
     log.info(
@@ -277,7 +283,7 @@ def opencti_reports_lookup(
     return rpts_list
 
 
-class ToolSpec:
-    fn = opencti_reports_lookup
-    opencti_url = ""
-    opencti_key = ""
+def tool_init(url, key):
+    OpenCTIConfig.opencti_url = url
+    OpenCTIConfig.opencti_key = key
+    return opencti_reports_lookup

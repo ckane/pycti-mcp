@@ -4,6 +4,11 @@ from typing import Annotated
 from pycti import OpenCTIApiClient
 
 
+class OpenCTIConfig:
+    opencti_url = ""
+    opencti_key = ""
+
+
 # Parse a "Threat Adversary" when fetched from the system
 def parse_adv(ta):
     parsed_ta = {
@@ -149,12 +154,12 @@ def opencti_adversary_lookup(
     and Intrusion Sets. If it isn't found, None will be returned."""
     log = logging.getLogger(name=__name__)
 
-    if not ToolSpec.opencti_url:
+    if not OpenCTIConfig.opencti_url:
         log.error("OpenCTI URL was not set. Tool will not work")
         return None
 
     octi = OpenCTIApiClient(
-        url=ToolSpec.opencti_url, token=ToolSpec.opencti_key, ssl_verify=True
+        url=OpenCTIConfig.opencti_url, token=OpenCTIConfig.opencti_key, ssl_verify=True
     )
 
     adversary_types = [
@@ -246,7 +251,7 @@ def opencti_adversary_lookup(
     return ta_list if ta_list else None
 
 
-class ToolSpec:
-    fn = opencti_adversary_lookup
-    opencti_url = ""
-    opencti_key = ""
+def tool_init(url, key):
+    OpenCTIConfig.opencti_url = url
+    OpenCTIConfig.opencti_key = key
+    return opencti_adversary_lookup

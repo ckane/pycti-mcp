@@ -60,14 +60,12 @@ def main():
 
     mcp = FastMCP("OpenCTI.MCP")
 
-    # Dynamically walk through ./pycti_tools/ and import each tool into MCP via its ToolSpec
+    # Dynamically walk through ./pycti_tools/ and import each tool into MCP via its init_tool fn
     for m in pycti_mcp.pycti_tools.__all__:
         tmpmod = importlib.import_module(f"pycti_mcp.pycti_tools.{m}")
         try:
-            tmpmod.ToolSpec.opencti_url = args.url
-            tmpmod.ToolSpec.opencti_key = args.key
-            mcp.tool(tmpmod.ToolSpec.fn)
-            log.info(f"Added {tmpmod.ToolSpec} to MCP")
+            mcp.tool(tmpmod.tool_init(args.url, args.key))
+            log.info(f"Added Tool {m} to MCP")
         except Exception as e:
             log.critical(f"Failed to load ToolSpec from pycti_tools.{m}")
             raise e
