@@ -122,7 +122,8 @@ def opencti_observable_lookup(
 ) -> Annotated[dict, "Data structure representing the observable"] | None:
     """Given obervable, look it up in OpenCTI. If it is stored in OpenCTI return a JSON
     data structure with information about it. Otherwise, if it doesn't exist, None will
-    be returned."""
+    be returned. The observable parameter can also be a STIX id or OpenCTI UUID, and the
+    tool will return the observable with that Id, if it exists in the platform."""
     log = logging.getLogger(name=__name__)
 
     if not OpenCTIConfig.opencti_url:
@@ -136,8 +137,14 @@ def opencti_observable_lookup(
     try:
         o = octi.stix_cyber_observable.read(
             filters={
-                "mode": "and",
-                "filters": [{"key": "value", "values": [observable]}],
+                "mode": "or",
+                # Search for a matching value across the id and standard_id fields, too, so
+                # so that this function can return an observable by either Id or Value
+                "filters": [
+                    {"key": "value", "values": [observable]},
+                    {"key": "id", "values": [observable]},
+                    {"key": "standard_id", "values": [observable]},
+                ],
                 "filterGroups": [],
             },
             customAttributes=obs_projection,
