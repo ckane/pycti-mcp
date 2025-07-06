@@ -64,7 +64,7 @@ def main():
     for m in pycti_mcp.pycti_tools.__all__:
         tmpmod = importlib.import_module(f"pycti_mcp.pycti_tools.{m}")
         try:
-            mcp.tool(tmpmod.tool_init(args.url, args.key))
+            mcp.tool(tmpmod.tool_init(url=args.url, key=args.key))
             log.info(f"Added Tool {m} to MCP")
         except Exception as e:
             log.critical(f"Failed to load ToolSpec from pycti_tools.{m}")
