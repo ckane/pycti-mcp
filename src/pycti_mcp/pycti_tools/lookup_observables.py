@@ -1,7 +1,7 @@
 import json
-import logging
 from typing import Annotated
 from pycti import OpenCTIApiClient
+from fastmcp import Context
 
 
 class OpenCTIConfig:
@@ -117,17 +117,16 @@ obs_projection = """
 """
 
 
-def opencti_observable_lookup(
+async def opencti_observable_lookup(
     observable: Annotated[str, "The value of the observable to look up in OpenCTI"],
+    ctx: Context,
 ) -> Annotated[dict, "Data structure representing the observable"] | None:
     """Given obervable, look it up in OpenCTI. If it is stored in OpenCTI return a JSON
     data structure with information about it. Otherwise, if it doesn't exist, None will
     be returned. The observable parameter can also be a STIX id or OpenCTI UUID, and the
     tool will return the observable with that Id, if it exists in the platform."""
-    log = logging.getLogger(name=__name__)
-
     if not OpenCTIConfig.opencti_url:
-        log.error("OpenCTI URL was not set. Tool will not work")
+        await ctx.error("OpenCTI URL was not set. Tool will not work")
         return None
 
     octi = OpenCTIApiClient(
@@ -149,18 +148,18 @@ def opencti_observable_lookup(
             },
             customAttributes=obs_projection,
         )
-        log.debug(f"Got {json.dumps(o)}")
+        await ctx.debug(f"Got {json.dumps(o)}")
 
         if o is None:
-            log.info("Result from OpenCTI was None")
+            await ctx.info("Result from OpenCTI was None")
             return None
 
         parsed_o = parse_obs(o)
-        log.debug(f"Made {json.dumps(parsed_o)}")
+        await ctx.debug(f"Made {json.dumps(parsed_o)}")
 
         return parsed_o
     except Exception as e:
-        log.error("Failed: {e}\n".format(e=e))
+        await ctx.error("Failed: {e}\n".format(e=e))
         raise e
 
 

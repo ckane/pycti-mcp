@@ -1,8 +1,8 @@
 import json
-import logging
 from dateutil.parser import parse as dateparse
 from typing import Annotated
 from pycti import OpenCTIApiClient
+from fastmcp import Context
 
 
 class OpenCTIConfig:
@@ -202,24 +202,23 @@ objects(all: true) {
 
 # Look up any reports in the system that match the criteria
 # TODO: Look across reports, cases, malware analyses, and groupings
-def opencti_reports_lookup(
+async def opencti_reports_lookup(
+    ctx: Context,
     earliest: Annotated[str | None, "The earliest date of a report"] = None,
     latest: Annotated[str | None, "The latest date of a report"] = None,
     search: Annotated[str | None, "Search terms to filter"] = None,
 ) -> Annotated[list | None, "Data structure listing the discovered reports"]:
     """Given a date range (start and end date) and some search terms, find all reports in the system
     matching the given criteria"""
-    log = logging.getLogger(name=__name__)
-
     if not OpenCTIConfig.opencti_url:
-        log.error("OpenCTI URL was not set. Tool will not work")
+        await ctx.error("OpenCTI URL was not set. Tool will not work")
         return None
 
     octi = OpenCTIApiClient(
         url=OpenCTIConfig.opencti_url, token=OpenCTIConfig.opencti_key, ssl_verify=True
     )
 
-    log.info(
+    await ctx.info(
         f'Searching for reports between {earliest} and {latest} via search term "{search}"'
     )
 
@@ -268,17 +267,17 @@ def opencti_reports_lookup(
 
             fargs["filters"] = daterange_filter
 
-        log.debug(f"Query: {fargs}")
+        await ctx.debug(f"Query: {fargs}")
         r = octi.report.list(**fargs)
 
-        log.debug(f"{len(r)} Reports found")
+        await ctx.debug(f"{len(r)} Reports found")
 
         for rpt in r:
             parsed_rpt = parse_rpt(rpt)
             rpts_list.append(parsed_rpt)
-            log.debug(f"Report result: {json.dumps(parsed_rpt)}")
+            await ctx.debug(f"Report result: {json.dumps(parsed_rpt)}")
     except Exception as e:
-        log.error(f"There was an error {e}")
+        await ctx.error(f"There was an error {e}")
 
     return rpts_list
 
