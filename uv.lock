@@ -595,7 +595,7 @@ wheels = [
 
 [[package]]
 name = "pycti-mcp"
-version = "0.2.1"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastmcp" },
@@ -605,9 +605,9 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "fastmcp", specifier = ">=2.10.1" },
-    { name = "mcp", extras = ["cli"], specifier = ">=1.6.0" },
-    { name = "pycti", specifier = ">=6.7.2" },
+    { name = "fastmcp", specifier = ">=2.10.2" },
+    { name = "mcp", extras = ["cli"], specifier = ">=1.10.1" },
+    { name = "pycti", specifier = ">=6.7.3" },
 ]
 
 [[package]]
