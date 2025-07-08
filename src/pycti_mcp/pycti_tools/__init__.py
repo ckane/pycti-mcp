@@ -1,1 +1,6 @@
-__all__ = ['lookup_observables', 'lookup_adversary', 'lookup_reports']
+__all__ = [
+    "lookup_adversary",
+    "lookup_indicators",
+    "lookup_observables",
+    "lookup_reports",
+]
