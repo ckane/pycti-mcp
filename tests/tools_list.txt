@@ -1,3 +1,4 @@
 opencti_adversary_lookup
+opencti_indicator_lookup
 opencti_observable_lookup
 opencti_reports_lookup
