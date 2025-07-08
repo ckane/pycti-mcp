@@ -251,3 +251,53 @@ between the creation timestamps `earliest` and `latest`. Any of the inputs can b
 - `objects`: The STIX objects (Entities and Cyber observables) contained within the report.
 
 </details>
+
+<details>
+<summary>OpenCTI Indicator Lookup</summary>
+
+**Name**: `opencti_indicator_lookup`
+
+**Inputs**:
+
+- `pattern_search_strings` (`list[str]`): A list of search terms that **all**
+  must match in the `pattern` field of an indicator
+- `pattern_types` (`list[str]`): A list of pattern types to search for,
+  defined by the `indicator_type_ov` vocabulary in OpenCTI.
+- `indicator_id` (`str`): The OpenCTI Id, a STIX Id, or the signature name of
+  an indicator to retrieve, instead of searching
+
+This tool can be used to search for one or more indicators (also called a signature or IOC) given a list of strings,
+which will be used to perform a search within the indicator's pattern field (also known as the signature content or body).
+It will search for any indicators in OpenCTI that contain all of the strings in pattern_search_strings, where the pattern
+type (also called "signature type" or "indicator type" or "IOC type") are exactly any of the values specified in
+pattern_types. If pattern_types is empty list ([]), then this tool will interpret that as an instruction to search across
+all pattern types, even patterns that aren't specifically defined in the pattern_types definition.
+
+If indicator_id is not None, then it must contain either a STIX Id or an OpenCTI Id to fetch an indicator, IOC,
+signature, by Id rather than by searching. When used with indicator_id, this function will ignore the values of
+pattern_search_strings and pattern_types, and return the indicator specified by the Id even if it doesn't match either of those
+input parameters. The name of the indicator, such as its filename or signature name, can also be provided as the indicator_id.
+
+This tool will return a list of the indicators (also known as signatures, IOCs, or patterns) that match the provided input.
+
+- `signature`: The pattern of the indicator (the actual signature or IOC body as a string).
+- `stix_id`: The STIX standard ID for the indicator.
+- `opencti_id`: The internal OpenCTI entity ID for the indicator.
+- `signature_type`: The type of signature/pattern (e.g., YARA, Sigma, Snort).
+- `description`: A description of the indicator, if available.
+- `created`: The creation timestamp of the indicator within OpenCTI.
+- `last_updated`: The last time the indicator was updated in OpenCTI.
+- `labels`: A list of labels (strings) attached to the indicator.
+- `external_reports`: A list of related external references, each with:
+  - `name`: The label for the report bundle (currently always 'Self').
+  - `urls`: List of URLs for external references related to this indicator.
+- `confidence`: Numeric OpenCTI confidence score for the indicator.
+- `score`: The OpenCTI-specific score or priority for the indicator (may not always be present).
+- `revoked`: Boolean indicating if the indicator has been revoked.
+- `deploy`: Boolean showing if the indicator is marked for production deployment (OpenCTI detection flag).
+- `mitre_platforms`: List of MITRE ATT&CK platforms this indicator targets or is associated with.
+- `observables`: List of observable values referenced by this indicator. Each entry contains:
+  - `value`: The observable value (e.g., domain, hash, IP, etc.).
+  - `type`: The observable type (e.g., 'ipv4-addr', 'file:hashes.SHA256').
+
+</details>
