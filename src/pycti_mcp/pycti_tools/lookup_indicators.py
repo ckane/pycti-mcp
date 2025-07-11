@@ -188,7 +188,7 @@ async def opencti_indicator_lookup(
                     }
                 )
 
-        ind = octi.indicator.read(
+        ind = octi.indicator.list(
             filters=filter_block,
             customAttributes=ind_projection,
         )
