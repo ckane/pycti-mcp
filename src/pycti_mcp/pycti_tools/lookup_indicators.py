@@ -199,7 +199,7 @@ async def opencti_indicator_lookup(
             return None
 
         for i in ind:
-            parsed_ind = parse_indicator(ind)
+            parsed_ind = parse_indicator(i)
             await ctx.debug(f"Made {json.dumps(parsed_ind)}")
 
             found_indicators.append(parsed_ind)
